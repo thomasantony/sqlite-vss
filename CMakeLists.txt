@@ -12,6 +12,19 @@ option(FAISS_ENABLE_PYTHON "" OFF)
 option(BUILD_TESTING "" OFF)
 add_subdirectory(./vendor/faiss)
 
+include(ExternalProject)
+ExternalProject_Add(
+    sqlite_src
+    BUILD_IN_SOURCE 1
+    SOURCE_DIR ${CMAKE_SOURCE_DIR}/vendor/sqlite/
+    DOWNLOAD_COMMAND ${CMAKE_SOURCE_DIR}/vendor/get_sqlite.sh &&
+        cd ${CMAKE_SOURCE_DIR}/vendor/sqlite &&
+        ./configure
+    BUILD_COMMAND  make -j
+    CONFIGURE_COMMAND ""
+    INSTALL_COMMAND ""
+)
+
 # vendor in SQLite amalgammation
 include_directories(vendor/sqlite)
 link_directories(BEFORE vendor/sqlite)
@@ -42,3 +55,8 @@ set_target_properties(sqlite-vector PROPERTIES OUTPUT_NAME "vector0")
 target_include_directories(sqlite-vector PRIVATE include/)
 #add_executable(xxx src/debug.cpp)
 #target_link_libraries(xxx faiss_avx2)
+
+install(TARGETS sqlite-vector LIBRARY DESTINATION sqlite_vss)
+install(TARGETS sqlite-vss LIBRARY DESTINATION sqlite_vss)
+install(FILES python/sqlite_vss/sqlite_vss/__init__.py DESTINATION sqlite_vss)
+install(FILES python/sqlite_vss/sqlite_vss/version.py DESTINATION sqlite_vss)

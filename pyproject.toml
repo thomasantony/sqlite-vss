@@ -1,0 +1,63 @@
+[build-system]
+requires = ["scikit-build-core>=0.2.1", "scikit-build>=0.11.1", "cmake>=3.18", "setuptools>=42", "wheel"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "sqlite-vss"
+version = "0.0.3"
+authors = [
+    {name = "Alex Garcia"}
+]
+license = {text = "MIT License, Apache License, Version 2.0"}
+readme = "README.md"
+requires-python = ">=3.7"
+packages = [
+    {include = "sqlite_vss", from="python/sqlite_vss"},
+]
+
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+]
+
+[project.urls]
+homepage = "https://github.com/asg017/sqlite-vss"
+repository = "https://github.com/asg017/sqlite-vss"
+Issues = "https://github.com/asg017/sqlite-vss/issues"
+CI = "https://github.com/asg017/sqlite-vss/actions"
+Changelog = "https://github.com/asg017/sqlite-vss/releases"
+
+[tool.scikit-build]
+wheel.expand-macos-universal-tags = true
+cmake.build-type = "Release"
+
+[tool.cibuildwheel]
+test-command = "python -c \"import sqlite_vss\""
+
+# Skip Python 3.6, PyPy and 32-bit builds
+skip = ["cp36-*", "pp*", "*-win32", "*-manylinux_i686", "*-musllinux_i686", "*-win*"]
+
+build-verbosity = 3
+test-skip = ["*_arm64", "*_universal2:arm64"]
+
+[tool.cibuildwheel.linux]
+before-all = "yum install blas-devel lapack-devel"
+
+[tool.cibuildwheel.macos]
+before-all = "brew install llvm"
+
+[tool.cibuildwheel.macos.environment]
+CC = "/usr/local/opt/llvm/bin/clang"
+# CXX = "/usr/local/opt/llvm/bin/clang++"
+# LDFLAGS = "-L/usr/local/opt/llvm/lib"
+# CPPFLAGS = "-I/usr/local/opt/llvm/include"
+
+[[tool.cibuildwheel.overrides]]
+select = "*-musllinux*"
+before-all = "apk add openblas-dev blas-dev lapack-dev"

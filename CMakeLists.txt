@@ -10,7 +10,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 option(FAISS_ENABLE_GPU "" OFF)
 option(FAISS_ENABLE_PYTHON "" OFF)
 option(BUILD_TESTING "" OFF)
-add_subdirectory(./vendor/faiss)
+add_subdirectory(./vendor/faiss EXCLUDE_FROM_ALL)
 
 include(ExternalProject)
 ExternalProject_Add(
